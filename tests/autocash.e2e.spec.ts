@@ -5,87 +5,86 @@ import { VehicleDetailsPage } from '../pages/VehicleDetailsPage';
 
 test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
   test("Recherche et consultation d'un véhicule avec filtres", async ({ page }) => {
-    console.log('\nDébut du test E2E AutoCash\n');
+    console.log('\nDebut du test E2E AutoCash\n');
 
-    // 1. Accès à la plateforme
-    console.log('Étape 1 : Accès à la plateforme');
+    // 1. Acces a la plateforme
+    console.log('Etape 1 : Acces a la plateforme');
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    // ✅ Assertion : vérifier que le bouton Marque est visible
+    // Assertion : verifier que le bouton Marque est visible
     await expect(homePage.brandButton).toBeVisible();
-    console.log("Page d'accueil chargée\n");
+    console.log("Page d'accueil chargee\n");
 
-    // 2. Page d'accueil - Sélection marque et catégorie
-    console.log('Étape 2 : Sélection marque et catégorie');
+    console.log('Etape 2 : Sélection marque et catégorie');
 
-    // Sélectionner la marque
+    // Selectionner la marque
     await homePage.selectBrand('Toyota');
-    console.log('✓ Marque sélectionnée : Toyota');
+    console.log('Marque sélectionnée : Toyota');
 
-    // Assertion : vérifier que le bouton catégorie est visible
+    // Assertion : verifier que le bouton categorie est visible
     await expect(homePage.categoryButton).toBeVisible();
 
-    // Sélectionner la catégorie
+    // Selectionner la categorie
     await homePage.selectCategory('SUV');
-    console.log('✓ Catégorie sélectionnée : SUV');
+    console.log('Categorie sélectionnée : SUV');
 
-    // Assertion : vérifier que le bouton Rechercher est visible
+    // Assertion : verifier que le bouton Rechercher est visible
     await expect(homePage.showAllAdsButton).toBeVisible();
 
     // Cliquer sur Rechercher
     await homePage.clickShowAllAds();
-    console.log('✓ Affichage de toutes les annonces');
+    console.log('Affichage de toutes les annonces');
 
-    // ✅ Assertion : vérifier que l'URL contient "achat" ou "voitures"
+    //Assertion : verifier que l'URL contient "achat" ou "voitures"
     await expect(page).toHaveURL(/achat|voitures/i);
 
-    // 3. Page des résultats - Application des filtres
-    console.log('Étape 3 : Application des filtres');
+    // 3. Page des resultats - Application des filtres
+    console.log('Etape 3 : Application des filtres');
     const resultsPage = new ResultsPage(page);
 
     await resultsPage.openFilters();
-    console.log('✓ Section des filtres accessible');
+    console.log('Section des filtres accessible');
 
     // Activer le filtre "Éligible au financement"
     await resultsPage.enableFinancingEligibleFilter();
-    console.log('✓ Filtre "Éligible au financement" activé');
+    console.log('Filtre "Éligible au financement" active');
 
-    // Définir le prix maximum
+    // Definir le prix maximum
     const maxPrice = 350000;
     await resultsPage.setMaxPrice(maxPrice);
-    console.log(`✓ Prix maximum défini : ${maxPrice} DH`);
+    console.log(`Prix maximum défini : ${maxPrice} DH`);
 
     // Appliquer les filtres
     await resultsPage.applyFilters();
-    console.log('✓ Filtres appliqués');
+    console.log('Filtres appliqués');
 
-    // ✅ Assertion : vérifier qu'au moins un véhicule filtré est visible
+    // Assertion : verifier qu'au moins un vehicule filtre est visible
     const firstVehicle = resultsPage.firstVehicle;
     await expect(firstVehicle).toBeVisible();
-    console.log('✓ Résultats filtrés vérifiés');
+    console.log('Resultats filtres verifies');
 
-    // 4. Sélection du premier véhicule
-    console.log('Étape 4 : Sélection du premier véhicule');
+    // 4. Selection du premier vehicule
+    console.log('Etape 4 : Sélection du premier vehicule');
     await resultsPage.clickFirstVehicle();
-    console.log('✓ Premier véhicule sélectionné');
+    console.log('Premier vehicule selectionne');
 
     // 5. Page détails du véhicule
-    console.log('Étape 5 : Vérification des détails du véhicule');
+    console.log('Etape 5 : Verification des details du vehicule');
     const vehicleDetailsPage = new VehicleDetailsPage(page);
 
     await vehicleDetailsPage.verifyVehicleInformationVisible();
-    console.log('✓ Informations du véhicule affichées');
+    console.log('Informations du vehicule affichees');
 
     await vehicleDetailsPage.verifyFinancingSimulatorButton();
-    console.log('✓ Bouton de simulation de financement présent');
+    console.log('Bouton de simulation de financement present');
 
-    // ✅ Assertion : vérifier que le bouton financement est visible
+    //Assertion : verifier que le bouton financement est visible
     await expect(vehicleDetailsPage.financingSimulatorButton).toBeVisible();
 
-    console.log('Test E2E complété avec succès!\n');
+    console.log('Test E2E complete avec succes!\n');
 
-    // Capture d'écran finale
+    // Capture d'ecran finale
     await page.screenshot({ path: 'test-results/final-state.png', fullPage: true });
   });
 });

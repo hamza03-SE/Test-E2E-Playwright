@@ -9,7 +9,6 @@ export class VehicleDetailsPage {
   constructor(page: Page) {
     this.page = page;
 
-    // Selecteurs a confirmer avec Codegen
     this.vehicleTitle = page.locator('h1, h2, [data-testid="vehicle-title"]').first();
 
     // Prix - pattern "XXX XXX DH"
@@ -50,7 +49,7 @@ export class VehicleDetailsPage {
       }
     }
 
-    // Vérifier le prix
+    // Verifier le prix
     try {
       await this.vehiclePrice.waitFor({ state: 'visible', timeout: 10000 });
       const priceText = (await this.vehiclePrice.textContent())?.trim();
@@ -69,11 +68,11 @@ export class VehicleDetailsPage {
         if (!priceText) throw new Error('Prix vide (fallback)');
         await expect(anyPrice).toHaveText(priceText);
       } else {
-        console.log(' Aucun prix trouvé sur la page');
+        console.log(' Aucun prix trouve sur la page');
       }
     }
 
-    console.log('Informations du véhicule vérifiées');
+    console.log('Informations du vehicule verifiees');
   }
 
   async verifyFinancingSimulatorButton() {
@@ -82,16 +81,16 @@ export class VehicleDetailsPage {
     try {
       await this.financingSimulatorButton.waitFor({ state: 'visible', timeout: 10000 });
       const buttonText = (await this.financingSimulatorButton.textContent())?.trim();
-      console.log(` Bouton trouvé: "${buttonText}"`);
+      console.log(` Bouton trouve: "${buttonText}"`);
       if (!buttonText) throw new Error('Bouton vide');
       expect(buttonText.toLowerCase()).toContain('financement');
     } catch (error: unknown) {
-      console.log(' Bouton non trouvé avec le sélecteur par défaut');
+      console.log(' Bouton non trouve avec le sélecteur par defaut');
       console.log(' Recherche de tous les boutons contenant "financement"...');
 
       const allButtons = this.page.locator('button, a').filter({ hasText: /financement/i });
       const count = await allButtons.count();
-      console.log(`${count} élément(s) contenant "financement" trouvé(s)`);
+      console.log(`${count} element(s) contenant "financement" trouve`);
 
       if (count > 0) {
         for (let i = 0; i < count; i++) {
@@ -103,7 +102,7 @@ export class VehicleDetailsPage {
 
         const firstVisible = allButtons.filter({ hasText: /simulez|simulation/i }).first();
         const exists = await firstVisible.isVisible({ timeout: 3000 }).catch(() => false);
-        if (exists) console.log('  ✓ Bouton financement trouve (methode alternative)');
+        if (exists) console.log('Bouton financement trouve');
         else throw new Error('Aucun bouton de financement visible trouve');
       } else throw error;
     }
