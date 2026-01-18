@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 20
 
-      # 3. Installer les dépendances
+      # 3. Installer les dependances
       - name: Install dependencies
         run: npm ci
 
@@ -29,11 +29,11 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # 5. Exécuter les tests
+      # 5. Executer les tests
       - name: Run E2E tests
         run: npx playwright test --reporter=list
 
-      # 6. Générer le rapport HTML
+      # 6. Generer le rapport HTML
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v3
         with:
