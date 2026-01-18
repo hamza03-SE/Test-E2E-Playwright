@@ -1,0 +1,65 @@
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Playwright
+# =========================
+playwright-report/
+test-results/
+.trace/
+.cache/
+
+# Vidéos, traces et screenshots Playwright
+**/*.webm
+**/*.zip
+**/*.png
+**/*.jpg
+
+# =========================
+# Environnement
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Build / Output
+# =========================
+dist/
+build/
+out/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Coverage
+# =========================
+coverage/
