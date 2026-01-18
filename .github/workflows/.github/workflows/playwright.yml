@@ -1,0 +1,41 @@
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  e2e-tests:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Installer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3. Installer les dépendances
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Installer les navigateurs Playwright
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # 5. Exécuter les tests
+      - name: Run E2E tests
+        run: npx playwright test --reporter=list
+
+      # 6. Générer le rapport HTML
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/

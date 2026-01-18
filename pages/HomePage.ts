@@ -8,7 +8,7 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    
+
     this.brandButton = page.getByRole('button', { name: 'Marque' });
     this.categoryButton = page.getByRole('button', { name: 'Catégorie' });
     this.showAllAdsButton = page.getByRole('button', { name: 'Rechercher' });
@@ -18,20 +18,26 @@ export class HomePage {
     console.log('Navigation vers AutoCash...');
     await this.page.goto('https://www.autocash.ma/fr', {
       waitUntil: 'domcontentloaded',
-      timeout: 60000
+      timeout: 60000,
     });
     console.log(' Page chargée');
   }
 
   async selectBrand(brandName: string) {
     console.log(`Sélection de la marque : ${brandName}`);
-    
+
     // Cliquer sur le bouton "Marque"
     await this.brandButton.waitFor({ state: 'visible' });
     await this.brandButton.click();
+
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(500);
-    
-    // Essayer d'abord avec getByRole (méthode standard)
+
+    // await this.page.waitForLoadState('domcontentloaded');
+
+    //await expect(this.page.locator('h1')).toBeVisible({timeout: 5000});
+
+    // Essayer d'abord avec getByRole
     try {
       const brandOption = this.page.getByRole('option', { name: `Checkbox ${brandName}` });
       await brandOption.waitFor({ state: 'visible', timeout: 3000 });
@@ -44,34 +50,39 @@ export class HomePage {
       await brandText.click();
       console.log(` Marque "${brandName}" selectionnee (via getByText)`);
     }
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
   }
 
   async selectCategory(categoryName: string) {
     console.log(`Selection de la categorie : ${categoryName}`);
-    
+
     // Cliquer sur le bouton "Categorie"
     await this.categoryButton.waitFor({ state: 'visible' });
     await this.categoryButton.click();
+
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(500);
-    
+
     // Selectionner la categorie
     const categoryOption = this.page.getByRole('option', { name: `Checkbox ${categoryName}` });
     await categoryOption.waitFor({ state: 'visible' });
     await categoryOption.click();
     console.log(`Categorie "${categoryName}" selectionnee`);
-    
+
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
   }
 
   async clickShowAllAds() {
     console.log('Clic sur "Rechercher"...');
-    
+
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
     await this.showAllAdsButton.waitFor({ state: 'visible', timeout: 10000 });
     await this.showAllAdsButton.click();
     console.log('Navigation vers les resultats');
-    
-    await this.page.waitForLoadState('networkidle');
+
+    await this.page.waitForLoadState('domcontentloaded');
   }
 }

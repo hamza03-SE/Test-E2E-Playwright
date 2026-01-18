@@ -9,23 +9,28 @@ Valider un parcours utilisateur complet sur la plateforme AutoCash, de la recher
 ## Scénario testé
 
 ### 1. Accès à la plateforme
+
 - Navigation vers `https://www.autocash.ma/fr`
 
 ### 2. Page d'accueil
+
 - Sélection de la marque : **Toyota**
 - Sélection de la catégorie : **SUV**
 - Clic sur "Rechercher"
 
 ### 3. Page des résultats
+
 - Activation du filtre "Éligible au financement"
 - Définition du prix maximum : **350 000 DH**
 - Application des filtres
 - Vérification des résultats affichés
 
 ### 4. Liste filtrée
+
 - Sélection du premier véhicule
 
 ### 5. Page de détails du véhicule
+
 - Vérification de la visibilité des informations
 - Vérification de la présence du bouton "Simulez votre financement"
 
@@ -89,16 +94,19 @@ Les screenshots sont automatiquement générés en cas d'échec et sauvegardés 
 ## Points clés de l'implémentation
 
 ### Page Object Model
+
 - **Séparation des responsabilités** : Chaque page a sa propre classe
 - **Réutilisabilité** : Les méthodes peuvent être réutilisées dans différents tests
 - **Maintenabilité** : Les sélecteurs sont centralisés
 
 ### Stratégies de sélection robustes
+
 - Utilisation de `getByRole`, `getByTestId`, `getByText`
 - Fallbacks pour gérer les variations de la page
 - Attentes explicites avec timeouts adaptés
 
 ### Gestion des erreurs
+
 - Try-catch pour gérer les éléments dynamiques
 - Logs détaillés pour faciliter le debugging
 - Screenshots automatiques en cas d'échec
@@ -112,3 +120,6 @@ Les screenshots sont automatiquement générés en cas d'échec et sauvegardés 
 ---
 
 **Date de soumission** : 18/01/2025
+
+
+![Playwright Tests](https://https://github.com/hamza03-SE/Test-E2E-Playwright/actions/workflows/playwright.yml/badge.svg)
