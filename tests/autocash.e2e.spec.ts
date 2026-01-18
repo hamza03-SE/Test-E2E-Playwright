@@ -16,18 +16,18 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
     await expect(homePage.brandButton).toBeVisible();
     console.log("Page d'accueil chargee\n");
 
-    console.log('Etape 2 : Sélection marque et catégorie');
+    console.log('Etape 2 : Selection marque et categorie');
 
     // Selectionner la marque
     await homePage.selectBrand('Toyota');
-    console.log('Marque sélectionnée : Toyota');
+    console.log('Marque selectionnee : Toyota');
 
     // Assertion : verifier que le bouton categorie est visible
     await expect(homePage.categoryButton).toBeVisible();
 
     // Selectionner la categorie
     await homePage.selectCategory('SUV');
-    console.log('Categorie sélectionnée : SUV');
+    console.log('Categorie selectionnée : SUV');
 
     // Assertion : verifier que le bouton Rechercher est visible
     await expect(homePage.showAllAdsButton).toBeVisible();
@@ -48,16 +48,16 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
 
     // Activer le filtre "Éligible au financement"
     await resultsPage.enableFinancingEligibleFilter();
-    console.log('Filtre "Éligible au financement" active');
+    console.log('Filtre "Eligible au financement" active');
 
     // Definir le prix maximum
     const maxPrice = 350000;
     await resultsPage.setMaxPrice(maxPrice);
-    console.log(`Prix maximum défini : ${maxPrice} DH`);
+    console.log(`Prix maximum defini : ${maxPrice} DH`);
 
     // Appliquer les filtres
     await resultsPage.applyFilters();
-    console.log('Filtres appliqués');
+    console.log('Filtres appliques');
 
     // Assertion : verifier qu'au moins un vehicule filtre est visible
     const firstVehicle = resultsPage.firstVehicle;
@@ -65,7 +65,7 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
     console.log('Resultats filtres verifies');
 
     // 4. Selection du premier vehicule
-    console.log('Etape 4 : Sélection du premier vehicule');
+    console.log('Etape 4 : Selection du premier vehicule');
     await resultsPage.clickFirstVehicle();
     console.log('Premier vehicule selectionne');
 

@@ -11,7 +11,7 @@ export class VehicleDetailsPage {
 
     this.vehicleTitle = page.locator('h1, h2, [data-testid="vehicle-title"]').first();
 
-    // Prix - pattern "XXX XXX DH"
+    // Prix - pattern "AAA AAA DH"
     this.vehiclePrice = page.locator('text=/\\d[\\d\\s]*\\s*DH/i').first();
 
     // Bouton financement
@@ -19,22 +19,21 @@ export class VehicleDetailsPage {
   }
 
   async verifyVehicleInformationVisible() {
-    console.log('Vérification des informations du véhicule...');
+    console.log('Verification des informations du vehicule...');
 
     await this.page.waitForLoadState('domcontentloaded');
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(2000);
 
-    // Vérifier le titre
+    // Verifier le titre
     try {
       await this.vehicleTitle.waitFor({ state: 'visible', timeout: 10000 });
       const titleText = (await this.vehicleTitle.textContent())?.trim();
       console.log(`  Titre du vehicule visible: "${titleText}"`);
       if (!titleText) throw new Error('Titre vide');
-      await expect(this.vehicleTitle).toHaveText(titleText); // assertion correcte
+      await expect(this.vehicleTitle).toHaveText(titleText);
     } catch (error) {
-      console.log(' Titre non trouve avec le sélecteur par defaut', error);
+      console.log(' Titre non trouve avec le selecteur par defaut', error);
 
       const anyTitle = this.page.locator('h1, h2').first();
       const hasTitleAlt = await anyTitle.isVisible({ timeout: 5000 }).catch(() => false);
@@ -42,14 +41,13 @@ export class VehicleDetailsPage {
       if (hasTitleAlt) {
         const titleText = (await anyTitle.textContent())?.trim();
         console.log(`   Titre trouve (fallback): "${titleText}"`);
-        if (!titleText) throw new Error('Titre vide (fallback)');
+        if (!titleText) throw new Error('Titre vide');
         await expect(anyTitle).toHaveText(titleText);
       } else {
         throw new Error('Impossible de trouver le titre du vehicule');
       }
     }
 
-    // Verifier le prix
     try {
       await this.vehiclePrice.waitFor({ state: 'visible', timeout: 10000 });
       const priceText = (await this.vehiclePrice.textContent())?.trim();

@@ -20,51 +20,86 @@ export class HomePage {
       waitUntil: 'domcontentloaded',
       timeout: 60000,
     });
-    console.log(' Page chargée');
+    console.log('Page chargee');
+
+    // eslint-disable-next-line playwright/no-wait-for-timeout
+    await this.page.waitForTimeout(2000);
+
+    // Fermer la popup de cookies
+    await this.closeCookiePopup();
+  }
+
+  async closeCookiePopup() {
+    try {
+      const acceptButton = this.page.getByRole('button', { name: 'Accepter' });
+      const isVisible = await acceptButton.isVisible({ timeout: 3000 }).catch(() => false);
+
+      if (isVisible) {
+        await acceptButton.click();
+        console.log('Popup cookies fermee');
+
+        // eslint-disable-next-line playwright/no-wait-for-timeout
+        await this.page.waitForTimeout(1000);
+      }
+    } catch {
+    
+    }
   }
 
   async selectBrand(brandName: string) {
-    console.log(`Sélection de la marque : ${brandName}`);
+    console.log(`Selection de la marque : ${brandName}`);
 
-    // Cliquer sur le bouton "Marque"
     await this.brandButton.waitFor({ state: 'visible' });
     await this.brandButton.click();
 
     // eslint-disable-next-line playwright/no-wait-for-timeout
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(1000);
 
-    // await this.page.waitForLoadState('domcontentloaded');
-
-    //await expect(this.page.locator('h1')).toBeVisible({timeout: 5000});
-
-    // Essayer d'abord avec getByRole
     try {
       const brandOption = this.page.getByRole('option', { name: `Checkbox ${brandName}` });
-      await brandOption.waitFor({ state: 'visible', timeout: 3000 });
+      await brandOption.waitFor({ state: 'visible', timeout: 5000 });
+      await brandOption.scrollIntoViewIfNeeded();
       await brandOption.click();
-      console.log(` Marque "${brandName}" selectionnee (via getByRole)`);
+      console.log(`Marque "${brandName}" sélectionnée (via getByRole)`);
     } catch {
-      // Fallback : chercher directement par texte dans le menu ouvert
-      console.log(`  → Tentative alternative...`);
-      const brandText = this.page.getByText(brandName, { exact: true });
-      await brandText.click();
-      console.log(` Marque "${brandName}" selectionnee (via getByText)`);
+      console.log(` Tentative alternative...`);
+      
+      await this.page.keyboard.press('Escape');
+      // eslint-disable-next-line playwright/no-wait-for-timeout
+      await this.page.waitForTimeout(500);
+      
+      await this.brandButton.click();
+      // eslint-disable-next-line playwright/no-wait-for-timeout
+      await this.page.waitForTimeout(500);
+      
+
+      const brandInList = this.page.locator(`text="${brandName}"`).first();
+      await brandInList.waitFor({ state: 'visible', timeout: 5000 });
+      await brandInList.click({ force: true });
+      console.log(`Marque "${brandName}" selectionnee`);
     }
+
     // eslint-disable-next-line playwright/no-wait-for-timeout
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(1500);
+    
+    // Verifier que la marque est bien affichee dans le bouton
+    const buttonText = await this.brandButton.textContent();
+    if (buttonText?.includes(brandName)) {
+      console.log(`Verification : "${brandName}" visible dans le bouton`);
+    } else {
+      console.log(`Attention : "${brandName}" ne semble pas selectionne`);
+    }
   }
 
   async selectCategory(categoryName: string) {
     console.log(`Selection de la categorie : ${categoryName}`);
 
-    // Cliquer sur le bouton "Categorie"
     await this.categoryButton.waitFor({ state: 'visible' });
     await this.categoryButton.click();
 
     // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(500);
 
-    // Selectionner la categorie
     const categoryOption = this.page.getByRole('option', { name: `Checkbox ${categoryName}` });
     await categoryOption.waitFor({ state: 'visible' });
     await categoryOption.click();
@@ -79,6 +114,7 @@ export class HomePage {
 
     // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
+
     await this.showAllAdsButton.waitFor({ state: 'visible', timeout: 10000 });
     await this.showAllAdsButton.click();
     console.log('Navigation vers les resultats');
