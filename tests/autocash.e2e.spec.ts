@@ -4,27 +4,27 @@ import { ResultsPage } from '../pages/ResultsPage';
 import { VehicleDetailsPage } from '../pages/VehicleDetailsPage';
 
 test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
-  test("Recherche et consultation d'un véhicule avec filtres", async ({ page }) => {
+  test("Recherche et consultation d'un vehicule avec filtres", async ({ page }) => {
     console.log('\nDebut du test E2E AutoCash\n');
 
     // 1. Acces a la plateforme
-    console.log('Etape 1 : Acces a la plateforme');
+    console.log(' Acces a la plateforme');
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    // Assertion : vérifier que le bouton Marque est visible
+    // Assertion : verifier que le bouton Marque est visible
     await expect(homePage.brandButton).toBeVisible();
     console.log("Page d'accueil chargee\n");
 
-    // 2. Page d'accueil : Sélection marque et catégorie
-    console.log('Etape 2 : Selection marque et categorie');
+    // 2. Page d'accueil : Selection marque et categorie
+    console.log('Selection marque et categorie');
 
     await homePage.selectBrand('Toyota');
     console.log('Marque selectionnee : Toyota');
 
     await expect(homePage.categoryButton).toBeVisible();
     await homePage.selectCategory('SUV');
-    console.log('Categorie selectionnée : SUV');
+    console.log('Categorie selectionnee : SUV');
 
     await expect(homePage.showAllAdsButton).toBeVisible();
     await homePage.clickShowAllAds();
@@ -33,26 +33,26 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
     // Assertion : URL doit contenir "achat" ou "voitures"
     await expect(page).toHaveURL(/achat|voitures/i);
 
-    // 3. Page des résultats : Application des filtres
-    console.log('Etape 3 : Application des filtres');
+    // 3. Page des resultats : Application des filtres
+    console.log('Application des filtres');
     const resultsPage = new ResultsPage(page);
 
-    // Filtre "Éligible au financement"
+    // Filtre "Eligible au financement"
     await resultsPage.enableFinancingEligibleFilter();
 
-    // Définir le prix maximum
+    // Definir le prix maximum
     const maxPrice = 350000;
     await resultsPage.setMaxPrice(maxPrice);
 
-    // Vérifier que les résultats respectent les critères
+    // Verifier que les resultats respectent les criteres
     await resultsPage.verifyFilteredResults(maxPrice);
 
-    // 4. Sélection du premier véhicule
-    console.log('Etape 4 : Selection du premier vehicule');
+    // 4. Selection du premier vehicule
+    console.log('Selection du premier vehicule');
     await resultsPage.clickFirstVehicle();
 
-    // 5. Page détails du véhicule
-    console.log('Etape 5 : Verification des details du vehicule');
+    // 5. Page details du vehicule
+    console.log('Verification des details du vehicule');
     const vehicleDetailsPage = new VehicleDetailsPage(page);
 
     await vehicleDetailsPage.verifyVehicleInformationVisible();
@@ -65,7 +65,7 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
 
     console.log('Test E2E complete avec succes!\n');
 
-    // Capture d'ecran finale
+    // Capture d'ecran
     await page.screenshot({ path: 'test-results/final-state.png', fullPage: true });
   });
 });

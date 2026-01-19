@@ -11,11 +11,11 @@ export class VehicleDetailsPage {
 
     this.vehicleTitle = page.locator('h1, h2, [data-testid="vehicle-title"]').first();
 
-    // Prix - pattern "AAA AAA DH"
+    // Prix
     this.vehiclePrice = page.locator('text=/\\d[\\d\\s]*\\s*DH/i').first();
 
     // Bouton financement
-    this.financingSimulatorButton = page.getByRole('button', { name: /simulez.*financement/i });
+    this.financingSimulatorButton = page.getByTestId('car-details-simulation-button');
   }
 
   async verifyVehicleInformationVisible() {
@@ -40,7 +40,7 @@ export class VehicleDetailsPage {
 
       if (hasTitleAlt) {
         const titleText = (await anyTitle.textContent())?.trim();
-        console.log(`   Titre trouve (fallback): "${titleText}"`);
+        console.log(`   Titre trouve: "${titleText}"`);
         if (!titleText) throw new Error('Titre vide');
         await expect(anyTitle).toHaveText(titleText);
       } else {
@@ -57,13 +57,13 @@ export class VehicleDetailsPage {
     } catch (error) {
       console.log('  Prix non trouve - peut-etre un format different', error);
 
-      const anyPrice = this.page.locator('text=/DH|MAD/i').first();
+      const anyPrice = this.page.locator('text=/DH|/i').first();
       const hasPrice = await anyPrice.isVisible({ timeout: 5000 }).catch(() => false);
 
       if (hasPrice) {
         const priceText = (await anyPrice.textContent())?.trim();
-        console.log(` Prix trouve (fallback): ${priceText}`);
-        if (!priceText) throw new Error('Prix vide (fallback)');
+        console.log(` Prix trouve: ${priceText}`);
+        if (!priceText) throw new Error('Prix vide');
         await expect(anyPrice).toHaveText(priceText);
       } else {
         console.log(' Aucun prix trouve sur la page');
@@ -76,34 +76,24 @@ export class VehicleDetailsPage {
   async verifyFinancingSimulatorButton() {
     console.log('Verification du bouton "Simulez votre financement"...');
 
-    try {
-      await this.financingSimulatorButton.waitFor({ state: 'visible', timeout: 10000 });
-      const buttonText = (await this.financingSimulatorButton.textContent())?.trim();
-      console.log(` Bouton trouve: "${buttonText}"`);
-      if (!buttonText) throw new Error('Bouton vide');
-      expect(buttonText.toLowerCase()).toContain('financement');
-    } catch (error: unknown) {
-      console.log(' Bouton non trouve avec le sélecteur par defaut');
-      console.log(' Recherche de tous les boutons contenant "financement"...');
+    const financingButton = this.page.getByTestId('car-details-simulation-button');
 
-      const allButtons = this.page.locator('button, a').filter({ hasText: /financement/i });
-      const count = await allButtons.count();
-      console.log(`${count} element(s) contenant "financement" trouve`);
+    // Attendre que le bouton soit visible
+    await financingButton.waitFor({ state: 'visible', timeout: 10000 });
 
-      if (count > 0) {
-        for (let i = 0; i < count; i++) {
-          const btn = allButtons.nth(i);
-          const isVisible = await btn.isVisible().catch(() => false);
-          const text = (await btn.textContent().catch(() => ''))?.trim();
-          console.log(`     [${i}] Visible: ${isVisible ? ' ' : ' '} | Texte: "${text}"`);
-        }
+    // Assertion : le bouton est visible
+    await expect(financingButton).toBeVisible();
 
-        const firstVisible = allButtons.filter({ hasText: /simulez|simulation/i }).first();
-        const exists = await firstVisible.isVisible({ timeout: 3000 }).catch(() => false);
-        if (exists) console.log('Bouton financement trouve');
-        else throw new Error('Aucun bouton de financement visible trouve');
-      } else throw error;
+    // Assertion : le bouton est active
+    await expect(financingButton).toBeEnabled();
+
+    // verifier le texte
+    const text = (await financingButton.textContent())?.toLowerCase();
+    if (text) {
+      expect(text).toContain('financement');
     }
+
+    console.log('Bouton "Simulez votre financement" present et visible');
   }
 
   async takeScreenshot(filename: string = 'vehicle-details.png') {

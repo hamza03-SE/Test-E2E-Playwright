@@ -36,14 +36,14 @@ export class ResultsPage {
     await this.financingCheckbox.waitFor({ state: 'visible', timeout: 10000 });
     await this.financingCheckbox.click();
 
-    // Assertion clé
+    // Assertion
     await expect(this.financingCheckbox).toBeChecked();
 
     console.log('Filtre "Eligible au financement" active');
   }
 
   /**
-   * Définit le prix maximum
+   * Definit le prix maximum
    */
   async setMaxPrice(price: number) {
     console.log(`Definition du prix maximum : ${price} DH...`);
@@ -61,56 +61,55 @@ export class ResultsPage {
   }
 
   /**
-   * Vérifie que les résultats respectent le prix maximum
-   * (exigence explicite du challenge)
+   * Verifie que les resultats respectent le prix maximum
    */
   async verifyFilteredResults(maxPrice: number) {
-  console.log('Verification des resultats filtres...');
-  
-  await this.page.waitForTimeout(2000); 
+    console.log('Verification des resultats filtres...');
 
-  const count = await this.vehicleCards.count();
-  console.log(`${count} véhicule(s) trouvé(s)`);
+    await this.page.waitForTimeout(2000);
 
-  if (count === 0) {
-    console.log('Aucun vehicule trouve avec ces filtres');
-    return;
-  }
+    const count = await this.vehicleCards.count();
+    console.log(`${count} vehicule(s) trouve`);
 
-  const vehiclesToCheck = Math.min(count, 3);
-
-  for (let i = 0; i < vehiclesToCheck; i++) {
-    const vehicleCard = this.vehicleCards.nth(i);
-
-    // attendre que la carte soit visible
-    await vehicleCard.waitFor({ state: 'visible', timeout: 5000 });
-    await vehicleCard.scrollIntoViewIfNeeded();
-    await this.page.waitForTimeout(500);
-
-    // récupérer le texte de la carte de manière plus fiable
-    const text = await vehicleCard.innerText().catch(() => '');
-    
-    if (!text || text.trim().length === 0) {
-      console.warn(` Carte ${i + 1} vide`);
-      continue;
+    if (count === 0) {
+      console.log('Aucun vehicule trouve avec ces filtres');
+      return;
     }
 
-    console.log(`Vehicule ${i + 1} texte : ${text.slice(0, 50)}...`);
+    const vehiclesToCheck = Math.min(count, 3);
 
-    // Extraction du prix
-    const priceMatch = text.match(/(\d[\d\s]*)\s*(DH|MAD)/i);
-    if (priceMatch) {
-      const priceStr = priceMatch[1].replace(/\s/g, '');
-      const price = parseInt(priceStr);
-      console.log(`Prix véhicule ${i + 1}: ${price} DH`);
+    for (let i = 0; i < vehiclesToCheck; i++) {
+      const vehicleCard = this.vehicleCards.nth(i);
 
-      // Assertion : prix respecte le maximum
-      expect(price).toBeLessThanOrEqual(maxPrice);
-    } else {
-      console.warn(`Prix non trouvé pour la carte ${i + 1}`);
+      // attendre que la carte soit visible
+      await vehicleCard.waitFor({ state: 'visible', timeout: 5000 });
+      await vehicleCard.scrollIntoViewIfNeeded();
+      await this.page.waitForTimeout(500);
+
+      // récupérer le texte de la carte de manière plus fiable
+      const text = await vehicleCard.innerText().catch(() => '');
+
+      if (!text || text.trim().length === 0) {
+        console.warn(` Carte ${i + 1} vide`);
+        continue;
+      }
+
+      console.log(`Vehicule ${i + 1} texte : ${text.slice(0, 50)}...`);
+
+      // Extraction du prix
+      const priceMatch = text.match(/(\d[\d\s]*)\s*(DH|MAD)/i);
+      if (priceMatch) {
+        const priceStr = priceMatch[1].replace(/\s/g, '');
+        const price = parseInt(priceStr);
+        console.log(`Prix vehicule ${i + 1}: ${price} DH`);
+
+        // Assertion : prix respecte le maximum
+        expect(price).toBeLessThanOrEqual(maxPrice); //inf
+      } else {
+        console.warn(`Prix non trouve pour la carte ${i + 1}`);
+      }
     }
   }
-}
   /**
    * Clique sur le premier véhicule de la liste
    */

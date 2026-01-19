@@ -41,9 +41,7 @@ export class HomePage {
         // eslint-disable-next-line playwright/no-wait-for-timeout
         await this.page.waitForTimeout(1000);
       }
-    } catch {
-    
-    }
+    } catch {}
   }
 
   async selectBrand(brandName: string) {
@@ -60,18 +58,17 @@ export class HomePage {
       await brandOption.waitFor({ state: 'visible', timeout: 5000 });
       await brandOption.scrollIntoViewIfNeeded();
       await brandOption.click();
-      console.log(`Marque "${brandName}" sélectionnée (via getByRole)`);
+      console.log(`Marque "${brandName}" selectionnee`);
     } catch {
       console.log(` Tentative alternative...`);
-      
+
       await this.page.keyboard.press('Escape');
       // eslint-disable-next-line playwright/no-wait-for-timeout
       await this.page.waitForTimeout(500);
-      
+
       await this.brandButton.click();
       // eslint-disable-next-line playwright/no-wait-for-timeout
       await this.page.waitForTimeout(500);
-      
 
       const brandInList = this.page.locator(`text="${brandName}"`).first();
       await brandInList.waitFor({ state: 'visible', timeout: 5000 });
@@ -81,7 +78,7 @@ export class HomePage {
 
     // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1500);
-    
+
     // Verifier que la marque est bien affichee dans le bouton
     const buttonText = await this.brandButton.textContent();
     if (buttonText?.includes(brandName)) {
