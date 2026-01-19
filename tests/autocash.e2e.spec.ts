@@ -12,62 +12,44 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
-    // Assertion : verifier que le bouton Marque est visible
+    // Assertion : vérifier que le bouton Marque est visible
     await expect(homePage.brandButton).toBeVisible();
     console.log("Page d'accueil chargee\n");
 
+    // 2. Page d'accueil : Sélection marque et catégorie
     console.log('Etape 2 : Selection marque et categorie');
 
-    // Selectionner la marque
     await homePage.selectBrand('Toyota');
     console.log('Marque selectionnee : Toyota');
 
-    // Assertion : verifier que le bouton categorie est visible
     await expect(homePage.categoryButton).toBeVisible();
-
-    // Selectionner la categorie
     await homePage.selectCategory('SUV');
     console.log('Categorie selectionnée : SUV');
 
-    // Assertion : verifier que le bouton Rechercher est visible
     await expect(homePage.showAllAdsButton).toBeVisible();
-
-    // Cliquer sur Rechercher
     await homePage.clickShowAllAds();
     console.log('Affichage de toutes les annonces');
 
-    //Assertion : verifier que l'URL contient "achat" ou "voitures"
+    // Assertion : URL doit contenir "achat" ou "voitures"
     await expect(page).toHaveURL(/achat|voitures/i);
 
-    // 3. Page des resultats - Application des filtres
+    // 3. Page des résultats : Application des filtres
     console.log('Etape 3 : Application des filtres');
     const resultsPage = new ResultsPage(page);
 
-    await resultsPage.openFilters();
-    console.log('Section des filtres accessible');
-
-    // Activer le filtre "Éligible au financement"
+    // Filtre "Éligible au financement"
     await resultsPage.enableFinancingEligibleFilter();
-    console.log('Filtre "Eligible au financement" active');
 
-    // Definir le prix maximum
+    // Définir le prix maximum
     const maxPrice = 350000;
     await resultsPage.setMaxPrice(maxPrice);
-    console.log(`Prix maximum defini : ${maxPrice} DH`);
 
-    // Appliquer les filtres
-    await resultsPage.applyFilters();
-    console.log('Filtres appliques');
+    // Vérifier que les résultats respectent les critères
+    await resultsPage.verifyFilteredResults(maxPrice);
 
-    // Assertion : verifier qu'au moins un vehicule filtre est visible
-    const firstVehicle = resultsPage.firstVehicle;
-    await expect(firstVehicle).toBeVisible();
-    console.log('Resultats filtres verifies');
-
-    // 4. Selection du premier vehicule
+    // 4. Sélection du premier véhicule
     console.log('Etape 4 : Selection du premier vehicule');
     await resultsPage.clickFirstVehicle();
-    console.log('Premier vehicule selectionne');
 
     // 5. Page détails du véhicule
     console.log('Etape 5 : Verification des details du vehicule');
@@ -79,7 +61,6 @@ test.describe('AutoCash E2E - Parcours utilisateur complet', () => {
     await vehicleDetailsPage.verifyFinancingSimulatorButton();
     console.log('Bouton de simulation de financement present');
 
-    //Assertion : verifier que le bouton financement est visible
     await expect(vehicleDetailsPage.financingSimulatorButton).toBeVisible();
 
     console.log('Test E2E complete avec succes!\n');
