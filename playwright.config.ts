@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1,
+  retries: 0, //process.env.CI ? 2 : 1
   workers: 1,
   reporter: [['html'], ['list']],
   use: {
@@ -12,7 +12,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on',
-    headless: true, // Changé à true pour --ui mode
+    headless: true,
     viewport: { width: 1920, height: 1080 },
     actionTimeout: 15000,
     navigationTimeout: 30000,
@@ -25,5 +25,5 @@ export default defineConfig({
     },
   ],
 
-  timeout: 120000, // Timeout global de 2 minutes
+  timeout: 120000,
 });

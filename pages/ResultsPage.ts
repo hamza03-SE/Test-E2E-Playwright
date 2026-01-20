@@ -8,28 +8,27 @@ export class ResultsPage {
   readonly priceTab: Locator;
   readonly maxPriceInput: Locator;
 
-  // Résultats
+  // Resultats
   readonly vehicleCards: Locator;
   readonly firstVehicle: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    // Filtre "Éligible au financement"
+    // Eligible au financement
     this.financingCheckbox = page.getByTestId('eligibleAuFinancement-true');
 
-    // Filtre prix
+    // prix
     this.priceTab = page.getByRole('tab', { name: 'Prix' });
     this.maxPriceInput = page.locator('input[type="number"]').last();
 
-    // Résultats
+    // Resultats
     this.vehicleCards = page.locator('[data-testid^="vehicle-card-"]');
     this.firstVehicle = page.getByTestId('vehicle-card-0');
   }
 
-  /**
-   * Active le filtre "Éligible au financement"
-   */
+   // Activer "Eligible au financement"
+  
   async enableFinancingEligibleFilter() {
     console.log('Activation du filtre "Eligible au financement"...');
 
@@ -58,18 +57,20 @@ export class ResultsPage {
     await this.maxPriceInput.press('Enter');
 
     console.log(`Prix maximum defini : ${price} DH`);
+
   }
 
   /**
    * Verifie que les resultats respectent le prix maximum
    */
+
   async verifyFilteredResults(maxPrice: number) {
     console.log('Verification des resultats filtres...');
 
     await this.page.waitForTimeout(2000);
 
     const count = await this.vehicleCards.count();
-    console.log(`${count} vehicule(s) trouve`);
+    console.log(`${count} vehicule trouve`);
 
     if (count === 0) {
       console.log('Aucun vehicule trouve avec ces filtres');
@@ -86,7 +87,7 @@ export class ResultsPage {
       await vehicleCard.scrollIntoViewIfNeeded();
       await this.page.waitForTimeout(500);
 
-      // récupérer le texte de la carte de manière plus fiable
+      // recuperer le texte de la carte
       const text = await vehicleCard.innerText().catch(() => '');
 
       if (!text || text.trim().length === 0) {
@@ -104,7 +105,7 @@ export class ResultsPage {
         console.log(`Prix vehicule ${i + 1}: ${price} DH`);
 
         // Assertion : prix respecte le maximum
-        expect(price).toBeLessThanOrEqual(maxPrice); //inf
+        expect(price).toBeLessThanOrEqual(maxPrice);
       } else {
         console.warn(`Prix non trouve pour la carte ${i + 1}`);
       }

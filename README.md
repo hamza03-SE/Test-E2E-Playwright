@@ -121,5 +121,3 @@ Les screenshots sont automatiquement générés en cas d'échec et sauvegardés 
 
 **Date de soumission** : 18/01/2025
 
-
-![Playwright Tests](https://https://github.com/hamza03-SE/Test-E2E-Playwright/actions/workflows/playwright.yml/badge.svg)

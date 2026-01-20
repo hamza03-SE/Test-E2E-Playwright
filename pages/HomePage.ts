@@ -22,7 +22,6 @@ export class HomePage {
     });
     console.log('Page chargee');
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(2000);
 
     // Fermer la popup de cookies
@@ -31,17 +30,37 @@ export class HomePage {
 
   async closeCookiePopup() {
     try {
-      const acceptButton = this.page.getByRole('button', { name: 'Accepter' });
-      const isVisible = await acceptButton.isVisible({ timeout: 3000 }).catch(() => false);
+      console.log('Recherche de cookies...');
+      
+      await this.page.waitForTimeout(2000);
+      
+      const acceptSelectors = [
+        this.page.getByRole('button', { name: 'Accepter' }),
+        this.page.getByRole('button', { name: /accepter/i }),
+        this.page.locator('button:has-text("Accepter")'),
+        this.page.locator('button[type="button"]:has-text("Accepter")'),
+        this.page.locator('//button[contains(text(), "Accepter")]'),
+      ];
 
-      if (isVisible) {
-        await acceptButton.click();
-        console.log('Popup cookies fermee');
-
-        // eslint-disable-next-line playwright/no-wait-for-timeout
-        await this.page.waitForTimeout(1000);
+      for (const selector of acceptSelectors) {
+        try {
+          const isVisible = await selector.isVisible({ timeout: 3000 }).catch(() => false);
+          if (isVisible) {
+            console.log('Bouton Accepter trouve');
+            await selector.click({ force: true });
+            console.log('Popup cookies fermee');
+            await this.page.waitForTimeout(2000);
+            return;
+          }
+        } catch (e) {
+          continue;
+        }
       }
-    } catch {}
+      
+      console.log(' Popup cookies non trouvee ou deja fermee');
+    } catch (error) {
+      console.log(' Erreur lors de la fermeture de la popup cookies');
+    }
   }
 
   async selectBrand(brandName: string) {
@@ -50,7 +69,6 @@ export class HomePage {
     await this.brandButton.waitFor({ state: 'visible' });
     await this.brandButton.click();
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
 
     try {
@@ -63,7 +81,7 @@ export class HomePage {
       console.log(` Tentative alternative...`);
 
       await this.page.keyboard.press('Escape');
-      // eslint-disable-next-line playwright/no-wait-for-timeout
+
       await this.page.waitForTimeout(500);
 
       await this.brandButton.click();
@@ -76,7 +94,6 @@ export class HomePage {
       console.log(`Marque "${brandName}" selectionnee`);
     }
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1500);
 
     // Verifier que la marque est bien affichee dans le bouton
@@ -94,7 +111,6 @@ export class HomePage {
     await this.categoryButton.waitFor({ state: 'visible' });
     await this.categoryButton.click();
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(500);
 
     const categoryOption = this.page.getByRole('option', { name: `Checkbox ${categoryName}` });
@@ -102,14 +118,18 @@ export class HomePage {
     await categoryOption.click();
     console.log(`Categorie "${categoryName}" selectionnee`);
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(2000);
+    
+    // Verification
+    const buttonText = await this.categoryButton.textContent();
+    if (buttonText?.includes(categoryName)) {
+      console.log(` Verification : "${categoryName}" visible dans le bouton`);
+    }
   }
 
   async clickShowAllAds() {
     console.log('Clic sur "Rechercher"...');
 
-    // eslint-disable-next-line playwright/no-wait-for-timeout
     await this.page.waitForTimeout(1000);
 
     await this.showAllAdsButton.waitFor({ state: 'visible', timeout: 10000 });
